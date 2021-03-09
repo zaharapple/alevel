@@ -176,7 +176,7 @@ ALTER SEQUENCE public.dfdf_id_seq OWNED BY public.dfdf.id;
 --
 
 CREATE TABLE public.genres (
-    id integer NOT NULL,
+    genre_id integer NOT NULL,
     genre character varying(100) DEFAULT 'unknown'::character varying NOT NULL
 );
 
@@ -202,7 +202,78 @@ ALTER TABLE public.genres_id_seq OWNER TO postgres;
 -- Name: genres_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.genres_id_seq OWNED BY public.genres.id;
+ALTER SEQUENCE public.genres_id_seq OWNED BY public.genres.genre_id;
+
+
+--
+-- Name: persons; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.persons (
+    id integer NOT NULL,
+    pid integer DEFAULT 0 NOT NULL,
+    fullname character varying DEFAULT ''::character varying NOT NULL
+);
+
+
+ALTER TABLE public.persons OWNER TO postgres;
+
+--
+-- Name: persons_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.persons_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.persons_id_seq OWNER TO postgres;
+
+--
+-- Name: persons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.persons_id_seq OWNED BY public.persons.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    mail character varying(100),
+    name character varying(80),
+    sex character varying(2)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
@@ -234,10 +305,24 @@ ALTER TABLE ONLY public.dfdf ALTER COLUMN id SET DEFAULT nextval('public.dfdf_id
 
 
 --
--- Name: genres id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: genres genre_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.genres ALTER COLUMN id SET DEFAULT nextval('public.genres_id_seq'::regclass);
+ALTER TABLE ONLY public.genres ALTER COLUMN genre_id SET DEFAULT nextval('public.genres_id_seq'::regclass);
+
+
+--
+-- Name: persons id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.persons ALTER COLUMN id SET DEFAULT nextval('public.persons_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
@@ -302,11 +387,37 @@ COPY public.dfdf (id, genre) FROM stdin;
 -- Data for Name: genres; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.genres (id, genre) FROM stdin;
+COPY public.genres (genre_id, genre) FROM stdin;
 1	SF
 2	novel
 3	story
 4	horror
+\.
+
+
+--
+-- Data for Name: persons; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.persons (id, pid, fullname) FROM stdin;
+1	0	polikarp Yevstahievich
+2	1	Veniamin Polikarpovich
+3	2	Prokhor Veniaminovich
+4	3	Prokop Prokhorovich
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, mail, name, sex) FROM stdin;
+1	mmm@mail.com	Vasya	m
+2	mmm@gmail.com	Alex	m
+3	Alexey@gmail.com	Alexey	m
+4	hell@gmail.com	Helen	f
+5	eachup@gmail.com	Jenny	f
+6	tpicks@gmail.com	Lora	f
 \.
 
 
@@ -346,6 +457,20 @@ SELECT pg_catalog.setval('public.genres_id_seq', 4, true);
 
 
 --
+-- Name: persons_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.persons_id_seq', 4, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 6, true);
+
+
+--
 -- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -374,7 +499,15 @@ ALTER TABLE ONLY public.dfdf
 --
 
 ALTER TABLE ONLY public.genres
-    ADD CONSTRAINT genres_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT genres_pkey PRIMARY KEY (genre_id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
 --
